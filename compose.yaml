@@ -3,22 +3,9 @@ version: '3'
 services:
   etcd1:
     build:
-      context: ./etcd
-    command: >
-      /etcd/bin/etcd
-      --name etcd1
-      --advertise-client-urls http://etcd1:2379
-      --listen-client-urls http://0.0.0.0:2379
-      --initial-advertise-peer-urls http://etcd1:2380
-      --listen-peer-urls http://0.0.0.0:2380
-      --initial-cluster-token etcd-cluster
-      --initial-cluster etcd1=http://etcd1:2380,etcd2=http://etcd2:2380,etcd3=http://etcd3:2380
-      --initial-cluster-state new
-      --enable-pprof
-      --logger=zap
-      --log-outputs=stderr
-      --heartbeat-interval=2000
-      --election-timeout=10000
+      context: .
+      dockerfile: etcd/Dockerfile
+    command: /etcd/bin/run-etcd.sh /etcd/bin/etcd etcd1
     ports:
       - "2379:2379"
     cap_add:
@@ -26,22 +13,9 @@ services:
 
   etcd2:
     build:
-      context: ./etcd
-    command: >
-      /etcd/bin/etcd
-      --name etcd2
-      --advertise-client-urls http://etcd2:2379
-      --listen-client-urls http://0.0.0.0:2379
-      --initial-advertise-peer-urls http://etcd2:2380
-      --listen-peer-urls http://0.0.0.0:2380
-      --initial-cluster-token etcd-cluster
-      --initial-cluster etcd1=http://etcd1:2380,etcd2=http://etcd2:2380,etcd3=http://etcd3:2380
-      --initial-cluster-state new
-      --enable-pprof
-      --logger=zap
-      --log-outputs=stderr
-      --heartbeat-interval=2000
-      --election-timeout=10000
+      context: .
+      dockerfile: etcd/Dockerfile
+    command: /etcd/bin/run-etcd.sh /etcd/bin/etcd etcd2
     ports:
       - "3379:2379"
     cap_add:
@@ -49,22 +23,9 @@ services:
 
   etcd3:
     build:
-      context: ./etcd
-    command: >
-      /etcd/bin/etcd
-      --name etcd3
-      --advertise-client-urls http://etcd3:2379
-      --listen-client-urls http://0.0.0.0:2379
-      --initial-advertise-peer-urls http://etcd3:2380
-      --listen-peer-urls http://0.0.0.0:2380
-      --initial-cluster-token etcd-cluster
-      --initial-cluster etcd1=http://etcd1:2380,etcd2=http://etcd2:2380,etcd3=http://etcd3:2380
-      --initial-cluster-state new
-      --enable-pprof
-      --logger=zap
-      --log-outputs=stderr
-      --heartbeat-interval=2000
-      --election-timeout=10000
+      context: .
+      dockerfile: etcd/Dockerfile
+    command: /etcd/bin/run-etcd.sh /etcd/bin/etcd etcd3
     ports:
       - "4379:2379"
     cap_add:
