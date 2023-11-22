@@ -1,3 +1,12 @@
-We suggest cloning with `--recurse-submodules` because the dockerfile requires a local
-etcd repository to build from source. Use `docker-compose up --build` to start the
-playground, and `./bin/inject-latency.sh` to delay packets by 200ms each way.
+etcd-playground is an environment for exploring, debugging, and developing etcd.
+
+## Usage
+
+```
+$ git clone git@github.com:jpittis/etcd-playground.git --recursive
+$ cd etcd-playground
+$ docker-compose up
+$ ./bin/inject-latency.sh
+```
+
+Use `docker-compose up -d --build` to rebuild etcd from source.
