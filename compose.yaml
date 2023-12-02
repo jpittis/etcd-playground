@@ -30,3 +30,10 @@ services:
       - "4379:2379"
     cap_add:
       - NET_ADMIN
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - "./config/prometheus.yml:/etc/prometheus/prometheus.yml"
+    ports:
+      - 9090:9090
