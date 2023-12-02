@@ -27,6 +27,16 @@ ADD ./etcd/etcd .
 RUN --mount=type=cache,target=/root/.cache/go-build make build
 RUN --mount=type=cache,target=/root/.cache/go-build make tools
 
+FROM golang:latest as runner-builder
+WORKDIR /runner
+
+# Copy over go.sum to cache runner dependencies.
+COPY ./etcd/runner/go.* .
+RUN go mod download
+
+ADD ./etcd/runner .
+RUN --mount=type=cache,target=/root/.cache/go-build go build
+
 # Finally, we copy all the binaries over to a fresh container.
 FROM alpine:latest
 WORKDIR /etcd
@@ -35,4 +45,4 @@ WORKDIR /etcd
 RUN apk add --no-cache iproute2 bash
 
 COPY --from=builder ./etcd/bin ./bin/
-COPY ./bin/run-etcd.sh ./bin/
+COPY --from=runner-builder ./runner/runner ./bin/runner
