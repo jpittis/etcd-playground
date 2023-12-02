@@ -8,7 +8,7 @@ fi
 path="$1"
 name="$2"
 
-$path \
+exec $path \
   --name "$name" \
   --advertise-client-urls "http://$name:2379" \
   --listen-client-urls http://0.0.0.0:2379 \
