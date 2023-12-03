@@ -12,7 +12,11 @@ import (
 )
 
 type config struct {
-	OutboundLatencyMs int `yaml:"outbound_latency_ms"`
+	PeerConfig map[string]peerConfig `yaml:"peer_config"`
+}
+
+type peerConfig struct {
+	OutboundLatencyMs map[string]int `yaml:"outbound_latency_ms"`
 }
 
 func readConfigFromFile(path string) (config, error) {
@@ -39,8 +43,9 @@ func main() {
 	}
 	log.Printf("Loaded config config-path=%s, config=%+v", configPath, cfg)
 
-	if cfg.OutboundLatencyMs > 0 {
-		err := applyOutboundLatency(cfg.OutboundLatencyMs)
+	peerConfig := cfg.PeerConfig[name]
+	for device, latencyMs := range peerConfig.OutboundLatencyMs {
+		err := applyOutboundLatency(device, latencyMs)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -93,18 +98,18 @@ func startEtcd(path, name string) error {
 	return cmd.Wait()
 }
 
-func applyOutboundLatency(outboundLatencyMs int) error {
-	log.Printf("Applying outbound latency outbound-latency-ms=%d", outboundLatencyMs)
+func applyOutboundLatency(device string, latencyMs int) error {
+	log.Printf("Applying outbound latency device=%s, latency-ms=%d", device, latencyMs)
 	cmd := exec.Command(
 		"tc",
 		"qdisc",
 		"add",
 		"dev",
-		"eth0",
+		device,
 		"root",
 		"netem",
 		"delay",
-		fmt.Sprintf("%dms", outboundLatencyMs),
+		fmt.Sprintf("%dms", latencyMs),
 	)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

@@ -1,1 +1,13 @@
-outbound_latency_ms: 100
+peer_config:
+  etcd1:
+    outbound_latency_ms:
+      eth0: 30 # etcd2
+      eth1: 30 # etcd3
+  etcd2:
+    outbound_latency_ms:
+      eth0: 30 # etcd1
+      eth1: 10 # etcd3
+  etcd3:
+    outbound_latency_ms:
+      eth0: 10 # etcd2
+      eth1: 30 # etcd1

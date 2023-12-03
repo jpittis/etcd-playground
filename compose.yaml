@@ -12,6 +12,10 @@ services:
       - "2379:2379"
     cap_add:
       - NET_ADMIN
+    networks:
+      - etcd12
+      - etcd31
+      - prom1
 
   etcd2:
     build:
@@ -24,6 +28,10 @@ services:
       - "3379:2379"
     cap_add:
       - NET_ADMIN
+    networks:
+      - etcd12
+      - etcd23
+      - prom2
 
   etcd3:
     build:
@@ -36,6 +44,10 @@ services:
       - "4379:2379"
     cap_add:
       - NET_ADMIN
+    networks:
+      - etcd23
+      - etcd31
+      - prom3
 
   prometheus:
     image: prom/prometheus
@@ -43,3 +55,21 @@ services:
       - "./config/prometheus.yml:/etc/prometheus/prometheus.yml"
     ports:
       - 9090:9090
+    networks:
+      - prom1
+      - prom2
+      - prom3
+
+networks:
+  etcd12:
+    driver: bridge
+  etcd23:
+    driver: bridge
+  etcd31:
+    driver: bridge
+  prom1:
+    driver: bridge
+  prom2:
+    driver: bridge
+  prom3:
+    driver: bridge
