@@ -41,8 +41,6 @@ func startEtcd(path, name string) error {
 		"--enable-pprof",
 		"--logger=zap",
 		"--log-outputs=stderr",
-		"--heartbeat-interval=2000",
-		"--election-timeout=10000",
 	)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
