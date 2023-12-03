@@ -5,7 +5,9 @@ services:
     build:
       context: .
       dockerfile: etcd/Dockerfile
-    command: /etcd/bin/runner /etcd/bin/etcd etcd1
+    command: /etcd/bin/runner /etcd/bin/etcd etcd1 /etc/runner.yml
+    volumes:
+      - "./config/runner.yml:/etc/runner.yml"
     ports:
       - "2379:2379"
     cap_add:
@@ -15,7 +17,9 @@ services:
     build:
       context: .
       dockerfile: etcd/Dockerfile
-    command: /etcd/bin/runner /etcd/bin/etcd etcd2
+    command: /etcd/bin/runner /etcd/bin/etcd etcd2 /etc/runner.yml
+    volumes:
+      - "./config/runner.yml:/etc/runner.yml"
     ports:
       - "3379:2379"
     cap_add:
@@ -25,7 +29,9 @@ services:
     build:
       context: .
       dockerfile: etcd/Dockerfile
-    command: /etcd/bin/runner /etcd/bin/etcd etcd3
+    command: /etcd/bin/runner /etcd/bin/etcd etcd3 /etc/runner.yml
+    volumes:
+      - "./config/runner.yml:/etc/runner.yml"
     ports:
       - "4379:2379"
     cap_add:

@@ -7,20 +7,51 @@ import (
 	"os/exec"
 	"os/signal"
 	"syscall"
+
+	"gopkg.in/yaml.v3"
 )
 
-func main() {
-	if len(os.Args) != 3 {
-		log.Fatalf("usage: %s <path> <name>", os.Args[0])
-	}
-	path := os.Args[1]
-	name := os.Args[2]
-	log.Printf("Starting etcd path=%s, name=%s", path, name)
-	err := startEtcd(path, name)
+type config struct {
+	OutboundLatencyMs int `yaml:"outbound_latency_ms"`
+}
+
+func readConfigFromFile(path string) (config, error) {
+	cfg := config{}
+	data, err := os.ReadFile(path)
 	if err != nil {
-		log.Fatalf("Exited with error: %v", err)
+		return cfg, err
+	}
+	err = yaml.Unmarshal(data, &cfg)
+	return cfg, err
+}
+
+func main() {
+	if len(os.Args) != 4 {
+		log.Fatalf("usage: %s <exec-path> <name> <config-path>", os.Args[0])
+	}
+	execPath := os.Args[1]
+	name := os.Args[2]
+	configPath := os.Args[3]
+
+	cfg, err := readConfigFromFile(configPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("Loaded config config-path=%s, config=%+v", configPath, cfg)
+
+	if cfg.OutboundLatencyMs > 0 {
+		err := applyOutboundLatency(cfg.OutboundLatencyMs)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	log.Printf("Starting etcd exec-path=%s, name=%s", execPath, name)
+	err = startEtcd(execPath, name)
+	if err != nil {
+		log.Fatalf("Etcd exited with error: %v", err)
 	} else {
-		log.Println("Exited gracefully")
+		log.Println("Etcd exited gracefully")
 	}
 }
 
@@ -42,8 +73,9 @@ func startEtcd(path, name string) error {
 		"--logger=zap",
 		"--log-outputs=stderr",
 	)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	// TODO(jpittis): Add log searching.
+	// cmd.Stdout = os.Stdout
+	// cmd.Stderr = os.Stderr
 	err := cmd.Start()
 	if err != nil {
 		return err
@@ -59,4 +91,22 @@ func startEtcd(path, name string) error {
 	}()
 
 	return cmd.Wait()
+}
+
+func applyOutboundLatency(outboundLatencyMs int) error {
+	log.Printf("Applying outbound latency outbound-latency-ms=%d", outboundLatencyMs)
+	cmd := exec.Command(
+		"tc",
+		"qdisc",
+		"add",
+		"dev",
+		"eth0",
+		"root",
+		"netem",
+		"delay",
+		fmt.Sprintf("%dms", outboundLatencyMs),
+	)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }
