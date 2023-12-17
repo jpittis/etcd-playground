@@ -63,10 +63,16 @@ services:
 networks:
   etcd12:
     driver: bridge
+    driver_opts:
+      com.docker.network.container_iface_prefix: etcd12
   etcd23:
     driver: bridge
+    driver_opts:
+      com.docker.network.container_iface_prefix: etcd23
   etcd31:
     driver: bridge
+    driver_opts:
+      com.docker.network.container_iface_prefix: etcd31
   prom1:
     driver: bridge
   prom2:
