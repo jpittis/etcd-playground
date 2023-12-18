@@ -48,7 +48,7 @@ func main() {
 	peerConfig := cfg.PeerConfig[nodeName]
 	for device, latencyMs := range peerConfig.OutboundLatencyMs {
 		log.Printf("Applying outbound latency device=%s, latency-ms=%d", device, latencyMs)
-		err := network.ApplyOutboundLatency(device, latencyMs)
+		err := network.ApplyOutboundControl(device, latencyMs, 0)
 		if err != nil {
 			log.Fatalf("Failed to apply outbound latency: %v", err)
 		}
