@@ -14,26 +14,21 @@ var (
 	ErrAlreadyStopped = errors.New("already stopped")
 )
 
-type Process interface {
-	Start() error
-	Stop() error
-}
-
-func NewProcess(execPath, nodeName string) Process {
-	return &process{
-		execPath: execPath,
-		nodeName: nodeName,
-	}
-}
-
-type process struct {
+type Process struct {
 	sync.Mutex
 	execPath string
 	nodeName string
 	cmd      *exec.Cmd
 }
 
-func (p *process) Start() error {
+func NewProcess(execPath, nodeName string) *Process {
+	return &Process{
+		execPath: execPath,
+		nodeName: nodeName,
+	}
+}
+
+func (p *Process) Start() error {
 	p.Lock()
 	defer p.Unlock()
 	if p.cmd != nil {
@@ -51,7 +46,7 @@ func (p *process) Start() error {
 	return nil
 }
 
-func (p *process) Stop() error {
+func (p *Process) Stop() error {
 	p.Lock()
 	defer p.Unlock()
 	if p.cmd != nil {

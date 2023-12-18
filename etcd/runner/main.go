@@ -2,10 +2,12 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"runner/pkg/network"
 	"runner/pkg/process"
+	"runner/pkg/server"
 	"syscall"
 
 	"gopkg.in/yaml.v3"
@@ -61,6 +63,13 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to start etcd: %v", err)
 	}
+
+	srv := server.NewServer(proc)
+	mux := srv.NewServeMux()
+	go func() {
+		err := http.ListenAndServe("127.0.0.1:3333", mux)
+		log.Fatalf("ListenAndServe exited: %v", err)
+	}()
 
 	done := make(chan struct{}, 0)
 	go func() {
