@@ -8,10 +8,11 @@ import (
 )
 
 func ApplyOutboundControl(device string, latencyMs, lossPercent int) error {
-	exists, err := ShowOutboundControl(device)
+	line, err := ShowOutboundControl(device)
 	if err != nil {
 		return err
 	}
+	exists := !strings.Contains(line, "qdisc noqueue 0")
 
 	verb := "add"
 	if exists {
@@ -35,7 +36,7 @@ func ApplyOutboundControl(device string, latencyMs, lossPercent int) error {
 	return cmd.Run()
 }
 
-func ShowOutboundControl(device string) (bool, error) {
+func ShowOutboundControl(device string) (string, error) {
 	cmd := exec.Command(
 		"tc",
 		"qdisc",
@@ -47,7 +48,7 @@ func ShowOutboundControl(device string) (bool, error) {
 	cmd.Stderr = os.Stderr
 	out, err := cmd.Output()
 	if err != nil {
-		return false, err
+		return "", err
 	}
-	return !strings.Contains(string(out), "qdisc noqueue 0"), nil
+	return string(out), nil
 }

@@ -62,6 +62,14 @@ func (p *Process) Stop() error {
 	return err
 }
 
+func (p *Process) Name() string {
+	return p.nodeName
+}
+
+func (p *Process) Enabled() bool {
+	return p.cmd != nil
+}
+
 func buildCmd(execPath, nodeName string) *exec.Cmd {
 	return exec.Command(
 		execPath,
