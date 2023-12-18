@@ -35,7 +35,7 @@ COPY ./etcd/runner/go.* .
 RUN go mod download
 
 ADD ./etcd/runner .
-RUN --mount=type=cache,target=/root/.cache/go-build go build
+RUN --mount=type=cache,target=/root/.cache/go-build CGO_ENABLED=0 go build
 
 # Finally, we copy all the binaries over to a fresh container.
 FROM alpine:latest
