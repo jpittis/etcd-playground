@@ -49,7 +49,7 @@ func (p *Process) Start() error {
 func (p *Process) Stop() error {
 	p.Lock()
 	defer p.Unlock()
-	if p.cmd != nil {
+	if p.cmd == nil {
 		return ErrAlreadyStopped
 	}
 

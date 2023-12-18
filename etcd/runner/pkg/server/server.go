@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"runner/pkg/process"
 )
@@ -25,12 +26,14 @@ func (s *Server) NewServeMux() *http.ServeMux {
 func (s *Server) etcd(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
+		fmt.Fprint(w, "Must POST")
 		return
 	}
 
 	enabled := r.URL.Query().Get("enabled")
 	if enabled != "true" && enabled != "false" {
 		w.WriteHeader(http.StatusUnprocessableEntity)
+		fmt.Fprint(w, "Must specify enabled true or false")
 		return
 	}
 
@@ -43,6 +46,7 @@ func (s *Server) etcd(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "%v", err)
 		return
 	}
 }
@@ -50,6 +54,10 @@ func (s *Server) etcd(w http.ResponseWriter, r *http.Request) {
 func (s *Server) network(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
+		fmt.Fprint(w, "Must POST")
 		return
 	}
+
+	w.WriteHeader(http.StatusInternalServerError)
+	fmt.Fprint(w, "Unimplemented")
 }

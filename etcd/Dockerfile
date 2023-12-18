@@ -42,7 +42,7 @@ FROM alpine:latest
 WORKDIR /etcd
 
 # We require iproute2 for iptables and tc.
-RUN apk add --no-cache iproute2 bash
+RUN apk add --no-cache iproute2 bash curl
 
 COPY --from=builder ./etcd/bin ./bin/
 COPY --from=runner-builder ./runner/runner ./bin/runner
