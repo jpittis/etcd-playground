@@ -8,9 +8,6 @@ services:
     command: /etcd/bin/runner /etcd/bin/etcd etcd1 /etc/runner.yml
     volumes:
       - "./config/runner.yml:/etc/runner.yml"
-    ports:
-      - "2379:2379"
-      - "3331:3333"
     cap_add:
       - NET_ADMIN
     networks:
@@ -25,9 +22,6 @@ services:
     command: /etcd/bin/runner /etcd/bin/etcd etcd2 /etc/runner.yml
     volumes:
       - "./config/runner.yml:/etc/runner.yml"
-    ports:
-      - "3379:2379"
-      - "3332:3333"
     cap_add:
       - NET_ADMIN
     networks:
@@ -42,14 +36,21 @@ services:
     command: /etcd/bin/runner /etcd/bin/etcd etcd3 /etc/runner.yml
     volumes:
       - "./config/runner.yml:/etc/runner.yml"
-    ports:
-      - "4379:2379"
-      - "3333:3333"
     cap_add:
       - NET_ADMIN
     networks:
       - etcd23
       - etcd31
+      - prom3
+
+  manager:
+    build:
+      context: .
+      dockerfile: etcd/Dockerfile
+    command: sleep infinity
+    networks:
+      - prom1
+      - prom2
       - prom3
 
   prometheus:
