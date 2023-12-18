@@ -10,6 +10,7 @@ services:
       - "./config/runner.yml:/etc/runner.yml"
     ports:
       - "2379:2379"
+      - "3331:3333"
     cap_add:
       - NET_ADMIN
     networks:
@@ -26,6 +27,7 @@ services:
       - "./config/runner.yml:/etc/runner.yml"
     ports:
       - "3379:2379"
+      - "3332:3333"
     cap_add:
       - NET_ADMIN
     networks:
@@ -42,6 +44,7 @@ services:
       - "./config/runner.yml:/etc/runner.yml"
     ports:
       - "4379:2379"
+      - "3333:3333"
     cap_add:
       - NET_ADMIN
     networks:

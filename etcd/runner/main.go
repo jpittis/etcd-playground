@@ -67,7 +67,7 @@ func main() {
 	srv := server.NewServer(proc)
 	mux := srv.NewServeMux()
 	go func() {
-		err := http.ListenAndServe("127.0.0.1:3333", mux)
+		err := http.ListenAndServe("0.0.0.0:3333", mux)
 		log.Fatalf("ListenAndServe exited: %v", err)
 	}()
 
