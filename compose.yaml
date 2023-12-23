@@ -10,6 +10,8 @@ services:
       - "./config/runner.yml:/etc/runner.yml"
     cap_add:
       - NET_ADMIN
+    ports:
+      - 2379:2379
     networks:
       - etcd12
       - etcd31
